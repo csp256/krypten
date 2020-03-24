@@ -3,6 +3,8 @@ Encryption as simple as possible. Portable C++11 that just works.
 
 No configuration, no bloated API, no namespace pollution, no special build system, no bullshit. 
 
+Intended to be fully secure, but if you want security guarantees use OpenSSL instead.
+
 ## Usage
 
       std::string plaintext = "The man in black fled across the desert, and the gunslinger followed.";
@@ -27,7 +29,7 @@ That's it. That's the whole API. Nothing else is supported. The header file is 3
 * Parallel encryption and decryption
 * Decrypt only subset of plaintext
 * Optimization opportunities with SIMD
-* Should probably be able to take a `std::vector<std::byte>` or `T *` + `num_bytes`.
+* Should probably be able to take a `std::vector<T>` or `T *` + `num_bytes`.
 
 ## License
 
@@ -39,4 +41,4 @@ Snippets are taken from https://github.com/calccrypto/Encryptions which is MIT l
 
 ## Disclaimer
 
-Use OpenSSL if you're encrypting something really important.
+Use OpenSSL if you're encrypting something really important. You're on your own.
