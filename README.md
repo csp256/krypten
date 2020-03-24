@@ -13,7 +13,7 @@ No configuration, no bloated API, no namespace pollution, no special build syste
       auto deciphered = krypten.decrypt(ciphertext);
       assert(plaintext == deciphered);
       
-That's it. That's the whole API. The header file is 30 lines, including whitespace.
+That's it. That's the whole API. Nothing else is supported. The header file is 30 lines, including whitespace.
 
 ## Technical
 
@@ -27,6 +27,7 @@ That's it. That's the whole API. The header file is 30 lines, including whitespa
 * Parallel encryption and decryption
 * Decrypt only subset of plaintext
 * Optimization opportunities with SIMD
+* Should probably be able to take a `std::vector<std::byte>` or `T *` + `num_bytes`.
 
 ## License
 
