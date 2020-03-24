@@ -1,5 +1,5 @@
 # krypten
-Encryption as painlessly as possible.
+Encryption as painlessly as possible. 
 
 ## Usage
 
@@ -10,10 +10,27 @@ Encryption as painlessly as possible.
       auto ciphertext = krypten.encrypt(plaintext);
       auto deciphered = krypten.decrypt(ciphertext);
       assert(plaintext == deciphered);
+      
+That's it. That's the whole API.
 
 ## Technical
 
 * Implements AES 256 in CTR mode. 
 * Prepends IV to ciphertext. 
-* Uses CSPRNG for random numbers. 
-* Cross platform
+* Cryptographically secure random numbers. 
+* Cross platform.
+
+## To-Do
+
+* Unnecessary overhead around pkcs5 proceedure
+* Parallel encryption and decryption
+* Decrypt only subset of plaintext
+* Optimization opportunities with SIMD
+
+## License
+
+Krypten itself is in the public domain. 
+
+CSPRNG is distributed under the Boost Software License, Version 1.0.
+
+Snippets are taken from https://github.com/calccrypto/Encryptions which is MIT licensed. 
