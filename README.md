@@ -1,5 +1,7 @@
 # krypten
-Encryption as simple as possible.
+Encryption as simple as possible. Portable C++11 that just works. 
+
+No configuration, no bloated API, no namespace pollution, no special build system, no bullshit. 
 
 ## Usage
 
@@ -11,14 +13,13 @@ Encryption as simple as possible.
       auto deciphered = krypten.decrypt(ciphertext);
       assert(plaintext == deciphered);
       
-That's it. That's the whole API. 
+That's it. That's the whole API. The header file is 30 lines, including whitespace.
 
 ## Technical
 
 * Implements AES 256 in CTR mode. 
 * Prepends random IV to ciphertext. 
 * Cryptographically secure random numbers. 
-* Portable C++11.
 
 ## To-Do
 
@@ -37,4 +38,4 @@ Snippets are taken from https://github.com/calccrypto/Encryptions which is MIT l
 
 ## Disclaimer
 
-You should probably be using OpenSSL.
+Use OpenSSL if you're encrypting something really important.
