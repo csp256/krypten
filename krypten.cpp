@@ -311,7 +311,7 @@ namespace krypten {
     memcpy_wrapper(T* dest, U const& source)
     {
         auto s = reinterpret_cast<const T*>(source.data());
-        memcpy(dest, s, source.size() * sizeof(typename U::value_type));
+        memcpy((void *) dest, s, source.size() * sizeof(typename U::value_type));
     }
 
     //////////////////////////////////////////////////////////////////////////////
