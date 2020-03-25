@@ -7,14 +7,17 @@ Intended to be fully secure, but if you want security guarantees use OpenSSL ins
 
 ## Usage
 
-      std::string plaintext = "The man in black fled across the desert, and the gunslinger followed.";
+      auto plaintext = std::string{"The man in black fled across the desert, and the gunslinger followed."};
+
       using namespace krypten;
       auto secret_key = Krypten::random_key();
+      
       {
             auto krypten = Krypten{ secret_key };
             auto ciphertext = krypten.encrypt(plaintext);
             Krypten::save_ciphertext("./secure.bin", ciphertext);
       }
+      
       {
             auto krypten = Krypten{ secret_key };
             auto ciphertext = Krypten::load_ciphertext("./secure.bin");
