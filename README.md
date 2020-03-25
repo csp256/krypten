@@ -10,12 +10,18 @@ Intended to be fully secure, but if you want security guarantees use OpenSSL ins
       std::string plaintext = "The man in black fled across the desert, and the gunslinger followed.";
       using namespace krypten;
       auto secret_key = Krypten::random_key();
-      auto krypten = Krypten{ secret_key };
-      auto ciphertext = krypten.encrypt(plaintext);
-      auto deciphered = krypten.decrypt(ciphertext);
-      assert(plaintext == deciphered);
+      {
+            auto krypten = Krypten{ secret_key };
+            auto ciphertext = krypten.encrypt(plaintext);
+            Krypten::save_ciphertext("./secure.bin", ciphertext);
+      }
+      {
+            auto krypten = Krypten{ secret_key };
+            auto ciphertext = Krypten::load_ciphertext("./secure.bin");
+            auto plaintext = krypten.decrypt(ciphertext);
+      }
       
-That's it. That's the whole API. Nothing else is supported. The header file is 30 lines, including whitespace.
+That's it. That's the whole API. Nothing else is supported. 
 
 ## Technical
 
