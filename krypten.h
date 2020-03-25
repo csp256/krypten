@@ -21,6 +21,12 @@ namespace krypten {
         
         std::string 
         decrypt(std::vector<Krypten::Block> const& data) const;
+        
+        static std::vector<Krypten::Block>
+        load_ciphertext(std::string const& path);
+
+        static void
+        save_ciphertext(std::string const& path, std::vector<Krypten::Block> const& in);
 
     private:
         void 
