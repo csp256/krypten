@@ -290,8 +290,7 @@ namespace krypten {
     std::string
     add_pkcs5(const std::string& data, const unsigned int blocksize)
     {
-        // Adds PKCS5 Padding
-        int pad = ((blocksize - data.size()) % blocksize) % blocksize;
+        int pad = blocksize - (data.size() % blocksize);
         std::string padding(pad, static_cast<char>(pad));
         return data + padding;
     }
@@ -299,11 +298,8 @@ namespace krypten {
     void
     remove_pkcs5(std::string& data)
     {
-        // Removes PKCS Padding
         uint8_t pad = static_cast<uint8_t>(data[data.size() - 1]);
-        std::string padding(pad, static_cast<char>(pad));
-        if ((pad < data.size()) && (padding == data.substr(data.size() - pad, pad)))
-            data = data.substr(0, data.size() - pad);
+        data.resize(0, data.size() - pad);
     }
 
     template <typename T, typename U>
@@ -339,30 +335,30 @@ namespace krypten {
         constexpr uint8_t b = 240;
 
         uint8_t i = 1;
-        while ((key.size() << 2) < b) {
-            uint32_t t = ROL(key[key.size() - 1], 8, 32);
+        while ((q << 2) < b) {
+            uint32_t t = ROL(key[q - 1], 8, 32);
             uint32_t s = 0;
 
             for (uint8_t j = 0; j < 4; j++) {
                 s += aes[static_cast<uint8_t>(t >> (j << 3))] << (j << 3);
             }
 
-            t = s ^ key[key.size() - n];
+            t = s ^ key[q - n];
             t ^= ((1 << (i++ - 1)) % 229) << 24;
             key[q++] = t;
 
             for (uint8_t j = 0; j < 3; j++) {
-                key[q++] = (key[key.size() - 1] ^ key[key.size() - n]);
+                key[q++] = (key[q - 1] ^ key[q - n]);
             }
 
             s = 0;
             for (uint8_t j = 0; j < 4; j++) {
-                s += aes[static_cast<uint8_t>(key[key.size() - 1] >> (j << 3))] << (j << 3);
+                s += aes[static_cast<uint8_t>(key[q - 1] >> (j << 3))] << (j << 3);
             }
-            key[q++] = (s ^ key[key.size() - n]);
+            key[q++] = (s ^ key[q - n]);
 
             for (uint8_t j = 0; j < 3; j++) {
-                key[q++] = (key[key.size() - 1] ^ key[key.size() - n]);
+                key[q++] = (key[q - 1] ^ key[q - n]);
             }
         }
 
@@ -418,6 +414,43 @@ namespace krypten {
         memcpy_wrapper(sout.data(), out);
         remove_pkcs5(sout);
         return sout;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+
+    std::vector<Krypten::Block>
+    Krypten::load_ciphertext(std::string const& path)
+    {
+        std::vector<Krypten::Block> out;
+
+        #pragma warning(disable:4996)
+        auto fd = _open(path.c_str(), O_RDONLY);
+        #pragma warning(default:4996)
+        if (fd < 0)	std::runtime_error("Can not load ciphertext from: " + path);
+
+        struct ::stat sb; // Wow, good thing I would never want to use "stat" as a variable name. Thanks POSIX.
+        ::fstat(fd, &sb);
+
+        out.resize(sb.st_size / sizeof(decltype(out)::value_type));
+        _read(fd, const_cast<char*>(reinterpret_cast<char*>(out.data())), sb.st_size);
+        _close(fd);
+
+        return out;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+
+    void
+    Krypten::save_ciphertext(std::string const& path, std::vector<Krypten::Block> const& in)
+    {
+        #pragma warning(disable:4996)
+        int fd = _open(path.c_str(), O_CREAT | O_WRONLY | O_BINARY, 0666);
+        #pragma warning(default:4996)
+        if (fd < 0) std::runtime_error("Can not save ciphertext to: " + path);
+        _write(fd, in.data(), static_cast<unsigned int>(in.size() * sizeof(Krypten::Block)));
+        _close(fd);
     }
 
     //////////////////////////////////////////////////////////////////////////////
